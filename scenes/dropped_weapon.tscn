@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://cdropped007"]
+
+[ext_resource type="Script" path="res://scripts/dropped_weapon.gd" id="1_dscript"]
+[ext_resource type="PackedScene" path="res://assets/mp40.glb" id="2_mp40"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_dropped"]
+size = Vector3(0.2, 0.35, 0.85)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_drop"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath(".:rotation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="DroppedWeapon" type="RigidBody3D" groups=["dropped_weapons"]]
+collision_layer = 1
+collision_mask = 1
+mass = 4.0
+script = ExtResource("1_dscript")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+shape = SubResource("BoxShape3D_dropped")
+
+[node name="MP40" parent="." instance=ExtResource("2_mp40")]
+transform = Transform3D(-0.55, 0, -4.80825e-08, 0, 0.55, 0, 4.80825e-08, 0, -0.55, 0, 0, 0)
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_drop")

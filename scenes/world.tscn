@@ -1,0 +1,302 @@
+[gd_scene load_steps=23 format=3 uid="uid://cworld007"]
+
+[ext_resource type="Script" path="res://scripts/world.gd" id="1_worldscript"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_war"]
+sky_top_color = Color(0.12, 0.12, 0.15, 1)
+sky_horizon_color = Color(0.38, 0.25, 0.15, 1)
+ground_bottom_color = Color(0.08, 0.07, 0.05, 1)
+ground_horizon_color = Color(0.38, 0.25, 0.15, 1)
+sun_angle_max = 20.0
+
+[sub_resource type="Sky" id="Sky_war"]
+sky_material = SubResource("ProceduralSkyMaterial_war")
+
+[sub_resource type="Environment" id="Environment_war"]
+background_mode = 2
+sky = SubResource("Sky_war")
+ambient_light_source = 2
+ambient_light_color = Color(0.35, 0.28, 0.22, 1)
+ambient_light_sky_contribution = 0.6
+tonemap_mode = 2
+glow_enabled = true
+glow_intensity = 0.6
+fog_enabled = true
+fog_light_color = Color(0.32, 0.24, 0.18, 1)
+fog_density = 0.035
+fog_sky_affect = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dirt"]
+albedo_color = Color(0.22, 0.18, 0.14, 1)
+roughness = 0.95
+
+[sub_resource type="BoxMesh" id="BoxMesh_floor"]
+material = SubResource("StandardMaterial3D_dirt")
+size = Vector3(80, 1, 80)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(80, 1, 80)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_trench_wall"]
+albedo_color = Color(0.3, 0.22, 0.16, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_trench"]
+material = SubResource("StandardMaterial3D_trench_wall")
+size = Vector3(36, 3, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_trench"]
+size = Vector3(36, 3, 30)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wood"]
+albedo_color = Color(0.2, 0.15, 0.1, 1)
+roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_bridge"]
+material = SubResource("StandardMaterial3D_wood")
+size = Vector3(4.5, 0.3, 8)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fire_particle"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(1, 0.5, 0.1, 0.85)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fire"]
+emission_shape = 1
+emission_sphere_radius = 0.6
+direction = Vector3(0, 1, 0)
+spread = 20.0
+initial_velocity_min = 1.5
+initial_velocity_max = 3.5
+gravity = Vector3(0, 1.0, 0)
+scale_min = 0.3
+scale_max = 0.85
+
+[sub_resource type="SphereMesh" id="SphereMesh_fire"]
+material = SubResource("StandardMaterial3D_fire_particle")
+radius = 0.25
+height = 0.5
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_smoke_particle"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_color = Color(0.2, 0.18, 0.16, 0.45)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_smoke"]
+emission_shape = 1
+emission_sphere_radius = 0.8
+direction = Vector3(0.2, 1, 0.1)
+spread = 30.0
+initial_velocity_min = 2.0
+initial_velocity_max = 5.0
+gravity = Vector3(0.3, 0.5, 0)
+scale_min = 0.8
+scale_max = 2.2
+
+[sub_resource type="SphereMesh" id="SphereMesh_smoke"]
+material = SubResource("StandardMaterial3D_smoke_particle")
+radius = 0.5
+height = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dust"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.6, 0.5, 0.4, 0.3)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dust"]
+emission_shape = 3
+emission_box_extents = Vector3(35, 8, 35)
+direction = Vector3(-1, -0.2, -0.5)
+spread = 45.0
+initial_velocity_min = 0.5
+initial_velocity_max = 2.0
+gravity = Vector3(0, -0.2, 0)
+scale_min = 0.05
+scale_max = 0.15
+
+[sub_resource type="SphereMesh" id="SphereMesh_dust"]
+material = SubResource("StandardMaterial3D_dust")
+radius = 0.08
+height = 0.16
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_worldscript")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_war")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.866025, -0.383022, 0.321394, 0, 0.642788, 0.766044, -0.5, 0.663414, -0.55667, 0, 15, 0)
+light_color = Color(1, 0.75, 0.5, 1)
+light_energy = 0.7
+shadow_enabled = true
+
+[node name="TrenchTerrain" type="Node3D" parent="."]
+
+[node name="Floor" type="StaticBody3D" parent="TrenchTerrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TrenchTerrain/Floor"]
+mesh = SubResource("BoxMesh_floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TrenchTerrain/Floor"]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Mound_NW" type="StaticBody3D" parent="TrenchTerrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 1.5, -21)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TrenchTerrain/Mound_NW"]
+mesh = SubResource("BoxMesh_trench")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TrenchTerrain/Mound_NW"]
+shape = SubResource("BoxShape3D_trench")
+
+[node name="Mound_NE" type="StaticBody3D" parent="TrenchTerrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.5, -21)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TrenchTerrain/Mound_NE"]
+mesh = SubResource("BoxMesh_trench")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TrenchTerrain/Mound_NE"]
+shape = SubResource("BoxShape3D_trench")
+
+[node name="Mound_SW" type="StaticBody3D" parent="TrenchTerrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21, 1.5, 21)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TrenchTerrain/Mound_SW"]
+mesh = SubResource("BoxMesh_trench")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TrenchTerrain/Mound_SW"]
+shape = SubResource("BoxShape3D_trench")
+
+[node name="Mound_SE" type="StaticBody3D" parent="TrenchTerrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21, 1.5, 21)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TrenchTerrain/Mound_SE"]
+mesh = SubResource("BoxMesh_trench")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TrenchTerrain/Mound_SE"]
+shape = SubResource("BoxShape3D_trench")
+
+[node name="Bridge1" type="MeshInstance3D" parent="TrenchTerrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.9, -10)
+mesh = SubResource("BoxMesh_bridge")
+
+[node name="Bridge2" type="MeshInstance3D" parent="TrenchTerrain"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.9, 10)
+mesh = SubResource("BoxMesh_bridge")
+
+[node name="WarAtmosphere" type="Node3D" parent="."]
+
+[node name="DustAshParticles" type="GPUParticles3D" parent="WarAtmosphere"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0)
+amount = 1200
+lifetime = 6.0
+preprocess = 3.0
+process_material = SubResource("ParticleProcessMaterial_dust")
+draw_pass_1 = SubResource("SphereMesh_dust")
+
+[node name="FirePoint1" type="Node3D" parent="WarAtmosphere"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -8)
+
+[node name="FireParticles" type="GPUParticles3D" parent="WarAtmosphere/FirePoint1"]
+amount = 40
+lifetime = 1.2
+process_material = SubResource("ParticleProcessMaterial_fire")
+draw_pass_1 = SubResource("SphereMesh_fire")
+
+[node name="SmokeParticles" type="GPUParticles3D" parent="WarAtmosphere/FirePoint1"]
+amount = 60
+lifetime = 3.5
+process_material = SubResource("ParticleProcessMaterial_smoke")
+draw_pass_1 = SubResource("SphereMesh_smoke")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="WarAtmosphere/FirePoint1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+light_color = Color(1, 0.55, 0.15, 1)
+light_energy = 8.0
+omni_range = 12.0
+
+[node name="FirePoint2" type="Node3D" parent="WarAtmosphere"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 9)
+
+[node name="FireParticles" type="GPUParticles3D" parent="WarAtmosphere/FirePoint2"]
+amount = 40
+lifetime = 1.2
+process_material = SubResource("ParticleProcessMaterial_fire")
+draw_pass_1 = SubResource("SphereMesh_fire")
+
+[node name="SmokeParticles" type="GPUParticles3D" parent="WarAtmosphere/FirePoint2"]
+amount = 60
+lifetime = 3.5
+process_material = SubResource("ParticleProcessMaterial_smoke")
+draw_pass_1 = SubResource("SphereMesh_smoke")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="WarAtmosphere/FirePoint2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+light_color = Color(1, 0.5, 0.1, 1)
+light_energy = 8.0
+omni_range = 12.0
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="DroppedItems" type="Node3D" parent="."]
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/player.tscn", "res://scenes/dropped_weapon.tscn")
+spawn_path = NodePath("../Players")
+
+[node name="ItemSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/dropped_weapon.tscn")
+spawn_path = NodePath("../DroppedItems")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" type="PanelContainer" parent="CanvasLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -120.0
+offset_right = 170.0
+offset_bottom = 120.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/MainMenu"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="Title" type="Label" parent="CanvasLayer/MainMenu/VBoxContainer"]
+layout_mode = 2
+text = "FPS MULTIPLAYER MP40"
+horizontal_alignment = 1
+
+[node name="HostButton" type="Button" parent="CanvasLayer/MainMenu/VBoxContainer"]
+layout_mode = 2
+text = "Создать сервер (Получить ключ)"
+
+[node name="KeyDisplay" type="Label" parent="CanvasLayer/MainMenu/VBoxContainer"]
+layout_mode = 2
+text = "Ключ комнаты: XXXX-XXXX"
+horizontal_alignment = 1
+
+[node name="CopyKeyButton" type="Button" parent="CanvasLayer/MainMenu/VBoxContainer"]
+layout_mode = 2
+text = "Скопировать ключ"
+
+[node name="AddressEntry" type="LineEdit" parent="CanvasLayer/MainMenu/VBoxContainer"]
+layout_mode = 2
+placeholder_text = "Вставьте ключ комнаты или IP"
+alignment = 1
+
+[node name="JoinButton" type="Button" parent="CanvasLayer/MainMenu/VBoxContainer"]
+layout_mode = 2
+text = "Подключиться по ключу"
+
+[node name="StatusLabel" type="Label" parent="CanvasLayer/MainMenu/VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+autowrap_mode = 2
